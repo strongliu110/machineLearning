@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from math import log
+import operator
 
 def calcShannonEnt(dataSet):
     """计算给定数据集的香农熵"""
@@ -16,8 +17,8 @@ def calcShannonEnt(dataSet):
     shannonEnt = 0.0
     for key in labelCounts:
         # 以2为底求对数
-        prob = float(labelCounts[key]) / numEntries #  概率p(x)
-        shannonEnt -= prob * log(prob, 2) #  求和，得到香农熵
+        prob = float(labelCounts[key]) / numEntries  # 概率p(x)
+        shannonEnt -= prob * log(prob, 2)  # 求和，得到香农熵
 
     return shannonEnt
 
@@ -50,16 +51,16 @@ def splitDataSet(dataSet, axis, value):
             retDataSet.append(reducedFeatVec)
     return retDataSet
 
-# '''
+'''
 myDat, labels = createDataSet()
 print myDat
 print splitDataSet(myDat, 0, 1)
 print splitDataSet(myDat, 0, 0)
-# '''
+'''
 
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1
-    baseEntropy = calcShannonEnt(dataSet) #  计算无序时的信息熵
+    baseEntropy = calcShannonEnt(dataSet)  # 计算无序时的信息熵
     bestInfoGain = 0.0
     bestFeature = -1
     for i in range(numFeatures):
@@ -87,8 +88,45 @@ print chooseBestFeatureToSplit(myDat)
 print myDat
 '''
 
+def majorityCnt(classList):
+    # 多数表决
+    classCount = {}
+    for vote in classList:
+        if vote not in classCount.keys():
+            classCount[vote] = 0
+        classCount[vote] += 1
+
+    sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
+    return sortedClassCount[0][0]
 
 
+def createTree(dataSet, labels):
+    classList = [example[-1] for example in dataSet]  # 列向量
+    # 类别完全相同则停止继续划分
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
 
+    # 遍历完所有特征时返回出现次数最多的类别
+    if len(dataSet[0]) == 1:
+        return majorityCnt(classList)
+
+    bestFeat = chooseBestFeatureToSplit(dataSet)
+    bestFeatLabel = labels[bestFeat]
+    myTree = {bestFeatLabel: {}}
+
+    # 得到列表包含的所有属性值
+    del(labels[bestFeat])
+    featValues = [example[bestFeat] for example in dataSet]
+    uniqueVals = set(featValues)
+
+    for value in uniqueVals:
+        subLabels = labels[:]
+        myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
+
+    return myTree
+
+myDat, labels = createDataSet()
+myTree = createTree(myDat, labels)
+print myTree
 
 
