@@ -14,7 +14,7 @@ def createDataSet():
     return group, labels
 
 def classify0(inX, dataSet, labels, k):
-    """kNN算法"""
+    """k-近邻算法"""
     dataSetSize = dataSet.shape[0]  # 获取一维长度，即样本数量
 
     # 距离计算
@@ -36,8 +36,10 @@ def classify0(inX, dataSet, labels, k):
     return sortedClassCount[0][0]
 
 '''
-group,labels = createDataSet()
-classify0([0, 0], group, labels, 3)
+group, labels = createDataSet()
+print "group=%r" % group
+print "labels=%r" % labels
+print classify0([0, 0], group, labels, 3)
 '''
 
 def file2matrix(filename):
@@ -74,7 +76,7 @@ plt.show()
 '''
 
 def autoNorm(dataSet):
-    """归一化"""
+    """归一化特征值"""
     minVals = dataSet.min(0)  # 取出数据集中的最小值
     maxVals = dataSet.max(0)  # 取出数据集中的最大值
     ranges = maxVals - minVals  # 计算取值范围
@@ -87,12 +89,13 @@ def autoNorm(dataSet):
 '''
 datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')
 normMat, ranges, minVals = autoNorm(datingDataMat)
-normMat
-ranges
-minVals
+print "normMat=%r" % normMat
+print "ranges=%r" % ranges
+print "minVals=%r" % minVals
 '''
 
 def datingClassTest():
+    """分类器针对约会网站的测试代码"""
     hoRatio = 0.10 # 测试样本占比
     datingDataMat, datingLabels = file2matrix('datingTestSet.txt')
     normMat, ranges, minVals = autoNorm(datingDataMat)
@@ -106,13 +109,14 @@ def datingClassTest():
         if (classifierResult != datingLabels[i]):
             errorCount += 1.0
 
-    print  "the total error rate is: %f" % (errorCount / float(numTestVecs))
+    print "the total error rate is: %f" % (errorCount / float(numTestVecs))
 
-"""
+'''
 datingClassTest()
-"""
+'''
 
 def classifyPerson():
+    """约会网站预测函数"""
     resultList = ['not at all', 'in small doses', 'in large doses']
     # percentTats = float(raw_input("percentage of time spent playing video games?"))
     # ffMiles = float(raw_input("frequent flier miles earned per year?"))
@@ -125,11 +129,11 @@ def classifyPerson():
     normMat, ranges, minVals = autoNorm(datingDataMat)
     inArr = array([ffMiles, percentTats, iceCream])
     classifierResult = classify0((inArr - minVals) / ranges, normMat, datingLabels, 3)
-    print  "You will probably like this person: ", resultList[classifierResult - 1]
+    print "You will probably like this person: ", resultList[classifierResult - 1]
 
-"""
+'''
 classifyPerson()
-"""
+'''
 
 def img2vector(filename):
     """图像转向量"""
@@ -140,9 +144,10 @@ def img2vector(filename):
         for j in range(32):
             returnVect[0, 32 * i + j] = int(lineStr[j])
 
-    return  returnVect
+    return returnVect
 
 def handwritingClassTest():
+    """手写数字识别系统测试"""
     hwLabels = []
     # 获取目录内容
     trainingFileList = listdir('trainingDigits')
@@ -174,6 +179,6 @@ def handwritingClassTest():
     print "\n the total number of errors is: %d" % errorCount
     print "\n the total error rate is: %f " % (errorCount / float(mTest))
 
-# '''
+'''
 handwritingClassTest()
-# '''
+'''
