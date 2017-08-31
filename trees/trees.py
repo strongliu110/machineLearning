@@ -101,6 +101,7 @@ def majorityCnt(classList):
 
 
 def createTree(dataSet, labels):
+    """创建决策树"""
     classList = [example[-1] for example in dataSet]  # 列向量
     # 类别完全相同则停止继续划分
     if classList.count(classList[0]) == len(classList):
@@ -125,8 +126,63 @@ def createTree(dataSet, labels):
 
     return myTree
 
+"""
+mydat, labels = createdataset()
+mytree = createtree(mydat, labels)
+print mytree
+"""
+
+def classify(inputTree, featLabels, testVec):
+    """决策树的分类函数"""
+    firstStr = inputTree.keys()[0]
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index(firstStr)
+    for key in secondDict.keys():
+        if testVec[featIndex] == key:
+            if type(secondDict[key]).__name__ == "dict":
+                classLabel = classify(secondDict[key], featLabels, testVec)
+            else:
+                classLabel = secondDict[key]
+
+    return classLabel
+
+"""
 myDat, labels = createDataSet()
-myTree = createTree(myDat, labels)
+print labels
+import treePlotter
+myTree = treePlotter.retrieveTree(0)
 print myTree
+print classify(myTree, labels, [1, 0])
+print classify(myTree, labels, [1, 1])
+# """
 
+def storeTree(inputTree, filename):
+    """存储树"""
+    import pickle
+    fw = open(filename, 'w')
+    pickle.dump(inputTree, fw)
+    fw.close()
 
+def grabTree(filname):
+    """提取树"""
+    import pickle
+    fr = open(filname)
+    return pickle.load(fr)
+
+"""
+import treePlotter
+myTree = treePlotter.retrieveTree(0)
+filename = 'classifierStorage.txt'
+storeTree(myTree, filename)
+print grabTree(filename)
+# """
+
+# """
+fr = open("lenses.txt")
+lenses = [inst.strip().split('\t') for inst in fr.readlines()]
+lensesLabels = ['age', 'prescript', 'astigmatic', 'tearRate']
+lensesTree = createTree(lenses, lensesLabels)
+print lensesTree
+import treePlotter
+treePlotter.createPlot(lensesTree)
+# """
