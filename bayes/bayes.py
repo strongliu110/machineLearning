@@ -22,7 +22,7 @@ def createVocabList(dataSet):
     return list(vocabSet)
 
 def setOfWords2Vec(vocabList, inputSet):
-    """词表转换成向量"""
+    """词表转换成向量，词集模型"""
     returnVec = [0] * len(vocabList)  # 创建一个其中包含元素都为0的向量
 
     for word in inputSet:
@@ -102,5 +102,21 @@ def testingNB():
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
     print testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb)
 
+    testEntry = ['stupid', 'garbage']
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
+    print testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb)
 
+"""
 testingNB()
+"""
+
+def bagOfWords2VecMN(vocabList, inputSet):
+    """词表转换成向量，词袋模型"""
+    returnVec = [0] * len(vocabList)  # 创建一个其中包含元素都为0的向量
+
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] += 1
+
+    return returnVec
+
