@@ -45,6 +45,7 @@ print setOfWords2Vec(myVocabList, listOPosts[3])
 from numpy import *
 
 def trainNB0(trainMatrix, trainCaytegory):
+    """朴素贝叶斯分类器训练函数"""
     numTrainDocs = len(trainMatrix)  # 样本数量
     numWords = len(trainMatrix[0])  # 特征数量
     pAbusive = sum(trainCaytegory) / float(numTrainDocs)
@@ -82,7 +83,8 @@ print p1V
 """
 
 def classifyNB(vec2Classsify, p0Vec, p1Vec, pClass1):
-    p1 = sum(vec2Classsify * p1Vec) + log(pClass1)
+    """朴素贝叶斯分类函数"""
+    p1 = sum(vec2Classsify * p1Vec) + log(pClass1)  # 计算 vec2Classsify 中各单词出现频率
     p0 = sum(vec2Classsify * p0Vec) + log(1.0 - pClass1)
 
     if p1 > p0:
@@ -120,3 +122,161 @@ def bagOfWords2VecMN(vocabList, inputSet):
 
     return returnVec
 
+
+"""
+mySent = 'This book is the best book on Python or M.L I hava ever laid eyes upon.'
+print mySent.split()
+
+import re
+regEx = re.compile('\\W*')
+listOfTokens = regEx.split(mySent)
+print listOfTokens
+print [tok.lower() for tok in listOfTokens if len(tok) > 0]
+
+emailText = open('email/ham/6.txt').read()
+listOfTokens = regEx.split(emailText)
+print listOfTokens
+"""
+
+def textParse(bigString):
+    """文本解析"""
+    import re
+    listOfTokens = re.split(r'\W*', bigString)
+    return [tok.lower() for tok in listOfTokens if len(tok) > 2]
+
+def spamTest():
+    docList = []; classList = []; fullText = []
+    for i in range(1, 26):
+        wordList = textParse(open('email/spam/%d.txt' % i).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+        wordList = textParse(open('email/ham/%d.txt' % i).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+
+    vocabList = createVocabList(docList)
+
+    trainingSet = range(50)
+    testSet = []
+
+    # 随机构建训练集
+    for i in range(10):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])  # 加入测试集
+        del(trainingSet[randIndex])  # 从训练集删除
+
+    trainMat = []; trainClasses = []
+    for docIndex in trainingSet:
+        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainClasses.append(classList[docIndex])
+    p0V, p1V, pSpam = trainNB0(array(trainMat), array(trainClasses))
+
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = setOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
+            errorCount += 1
+
+    print "the error rate is: ", float(errorCount) / len(testSet)
+
+# """
+for i in range(0, 10):
+    spamTest()
+# """
+
+"""
+import feedparser
+ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
+ny['entries']
+print len(ny['entries'])
+"""
+
+def calcMostFreq(vocabList, fullText):
+    """计算高频词"""
+    import operator
+    freqDict = {}
+
+    # 计算单词出现频率
+    for token in vocabList:
+        freqDict[token] = fullText.count(token)
+
+    sortedFreq = sorted(freqDict.iteritems(), key=operator.itemgetter(1), reverse=True)
+    return sortedFreq[:30]
+
+def localWords(feed1, feed0):
+    """RSS源分类器"""
+    import feedparser
+    docList = []; classList = []; fullText = []
+    minLen = min(len(feed1['entries'],), len(feed0['entries']))
+    for i in range(minLen):
+        wordList = textParse(feed1['entries'][i]['summary'])
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+        wordList = textParse(feed1['entries'][i]['summary'])
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+
+    vocabList = createVocabList(docList)
+    top30Words = calcMostFreq(vocabList, fullText)
+
+    # 去掉出现次数最高的单词，停用词表
+    for pairW in top30Words:
+        if pairW[0] in vocabList:
+            vocabList.remove(pairW[0])
+
+    trainingSet = range(2 * minLen)
+    testSet = []
+    for i in range(20):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del (trainingSet[randIndex])
+
+    trainMat = []; trainClasses = []
+    for docIndex in trainingSet:
+        trainMat.append(bagOfWords2VecMN(vocabList, docList[docIndex]))
+        trainClasses.append(classList[docIndex])
+    p0V, p1V, pSpam = trainNB0(array(trainMat), array(trainClasses))
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = bagOfWords2VecMN(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
+            errorCount += 1
+
+    print "the error rate is: ", float(errorCount) / len(testSet)
+    return vocabList, p0V, p1V
+
+def getTopWords(ny, sf):
+    """最具有表征性的词汇显示函数"""
+    import operator
+    vocabList, p0V, p1V = localWords(ny, sf)
+    topNY = []; topSF = []
+    for i in range(len(p0V)):
+        if p0V[i] > -6.0:
+            topSF.append((vocabList[i], p0V[i]))
+        if p1V[i] > -6.0:
+            topNY.append((vocabList[i], p1V[i]))
+
+    sortedSF =sorted(topSF, key=lambda pair: pair[i], reverse=True)
+    print "SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**"
+    for item in sortedSF:
+        print item[0]
+
+    sortedNY = sorted(topNY, key=lambda pair: pair[1], reverse=True)
+    print "NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**"
+    for item in sortedNY:
+        print item[0]
+
+# """
+import feedparser
+ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
+sf = feedparser.parse('http://sfbat.craigslist.org/stp/index.rss')
+
+for i in range(0, 10):
+    vocabList, pSF, pNY = localWords(ny, sf)
+
+getTopWords(ny, sf)
+# """
