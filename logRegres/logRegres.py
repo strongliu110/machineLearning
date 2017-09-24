@@ -22,14 +22,13 @@ def gradAscent(dataMatIn, classLabels):
     dataMatrix = mat(dataMatIn)
     labelMat = mat(classLabels).transpose()  # 矩阵转置，得到列向量
     m, n = shape(dataMatrix)  # 矩阵维数
-    aplha = 0.001
+    alpha = 0.001
     maxCycles = 500
     weights = ones((n, 1))
     for k in range(maxCycles):
-        z = dataMatrix * weights
-        h = sigmoid(z)
+        h = sigmoid(dataMatrix * weights)
         error = (labelMat - h)
-        weights = weights + aplha * dataMatrix.transpose() * error
+        weights = weights + alpha * dataMatrix.transpose() * error
     return weights
 
 """
@@ -64,11 +63,48 @@ def plotBestFit(weights):
     plt.ylabel('X2')
     plt.show()
 
-# """
+"""
 dataArr, labelMat = loadDataSet()
 weights = gradAscent(dataArr, labelMat)
 weigthsArray = matrix.getA(weights)  # 矩阵转数组 matrix.getA()
 plotBestFit(weigthsArray)
-# """
+"""
 
+def stocgradAscent0(dataMatrix, classLabels):
+    """随机梯度上升算法"""
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(m):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights = weights + alpha * error * dataMatrix[i]
+    return weights
 
+"""
+dataArr, labelMat = loadDataSet()
+weights = stocgradAscent0(array(dataArr), labelMat)
+plotBestFit(weights)
+"""
+
+def stocGradAscent1(dataMatrix, classLabels, numIter = 150):
+    """改进的随机梯度上升算法"""
+    m, n = shape(dataMatrix)
+    weights = ones(n)
+    for j in range(numIter):
+        dataIndex = range(m)
+        for i in range(m):
+            alpha = 4 / (1.0 + j + i) + 0.01
+            randIndex = int(random.uniform(0, len(dataIndex)))
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+            del (dataIndex[randIndex])
+    return weights
+
+"""
+dataArr, labelMat = loadDataSet()
+weights = stocGradAscent1(array(dataArr), labelMat)
+# weights = stocGradAscent1(array(dataArr), labelMat, 500)
+plotBestFit(weights)
+"""
