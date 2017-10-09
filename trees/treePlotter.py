@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+决策树
+"""
+
 import matplotlib.pyplot as plt
 
 # 定义文本框和箭头格式

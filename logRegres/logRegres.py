@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Logistic回归
+"""
+
 from math import *
 from numpy import *
 
