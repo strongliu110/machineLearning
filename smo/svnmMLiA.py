@@ -112,17 +112,19 @@ for i in range(100):
 """
 
 
-def kernelTrans(X, A, kTup): #calc the kernel or transform data to a higher dimensional space
-    m,n = shape(X)
-    K = mat(zeros((m,1)))
-    if kTup[0]=='lin': K = X * A.T   #linear kernel
-    elif kTup[0]=='rbf':
+def kernelTrans(X, A, kTup):
+    """核转换函数"""
+    m, n = shape(X)
+    K = mat(zeros((m, 1)))
+    if kTup[0] =='lin':
+        K = X * A.T
+    elif kTup[0] =='rbf':
         for j in range(m):
-            deltaRow = X[j,:] - A
-            K[j] = deltaRow*deltaRow.T
-        K = exp(K/(-1*kTup[1]**2)) #divide in NumPy is element-wise not matrix like Matlab
-    else: raise NameError('Houston We Have a Problem -- \
-    That Kernel is not recognized')
+            deltaRow = X[j, :] - A
+            K[j] = deltaRow * deltaRow.T
+        K = exp(K/(-1 * kTup[1] ** 2))
+    else:
+        raise NameError('Houston We Have a Problem -- That Kernel is not recognized')
     return K
 
 class optStruct:
@@ -167,6 +169,7 @@ def updateEK(oS, k):
     oS.eCache[k] = [1, Ek]
 
 def innerL(i, oS):
+    """完整版Platt SMO算法内循环"""
     Ei = calcEk(oS, i)
     if ((oS.labelMat[i]*Ei < -oS.tol) and (oS.alphas[i] < oS.C)) or ((oS.labelMat[i]*Ei > oS.tol) and (oS.alphas[i] > 0)):
         j,Ej = selectJ(i, oS, Ei)
@@ -213,6 +216,7 @@ def innerL(i, oS):
         return 0
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+    """完整版Platt SMO的外循环"""
     oS = optStruct(mat(dataMatIn), mat(classLabels).transpose(), C, toler, kTup)
     iter = 0
     entireSet = True
@@ -260,4 +264,40 @@ print ws
 datMat = mat(dataArr)
 print datMat[0] * mat(ws) + b
 print labelArr[0]
+"""
+
+def testRbf(k1=1.3):
+    """利用核函数进行分类的径向基测试函数"""
+    dataArr, labelArr = loadDataSet('testSetRBF.txt')
+    b, alphas = smoP(dataArr, labelArr, 200, 0.0001, 10000, ('rbf', k1))
+    datMat = mat(dataArr)
+    labelMat = mat(labelArr).transpose()
+    svInd = nonzero(alphas.A > 0)[0]
+    sVs = datMat[svInd]
+    labelSV = labelMat[svInd]
+    print "there are %d Support Vectors" % shape(sVs)[0]
+
+    m, n = shape(datMat)
+    errorCount = 0
+    for i in range(m):
+        kernelEval = kernelTrans(sVs, datMat[i, ], ('rbf', k1))
+        predict = kernelEval.T * multiply(labelSV, alphas[svInd]) + b
+        if sign(predict) != sign(labelArr[i]):
+            errorCount += 1
+    print "the training error rate is: %f" % (float(errorCount) / m)
+
+    dataArr,labelArr = loadDataSet('testSetRBF2.txt')
+    errorCount = 0
+    datMat = mat(dataArr)
+    labelMat = mat(labelArr).transpose()
+    m, n = shape(datMat)
+    for i in range(m):
+        kernelEval = kernelTrans(sVs, datMat[i, :], ('rbf', k1))
+        predict = kernelEval.T * multiply(labelSV, alphas[svInd]) + b
+        if sign(predict) != sign(labelArr[i]):
+            errorCount += 1
+    print "the test error rate is: %f" % (float(errorCount) / m)
+
+"""
+testRbf()
 """
