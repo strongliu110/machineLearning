@@ -100,11 +100,11 @@ def adaClassify(datToClass,classifierArr):
     return sign(aggClassEst)
 
 
-# """
+"""
 datMat, classLabels = loadSimpData()
 D = mat(ones((5, 1)) / 5)
 buildStump(datMat, classLabels, D)
-classifierArray = adaBoostTrainDS(datMat, classLabels, 30)
+classifierArray, aggClassEst = adaBoostTrainDS(datMat, classLabels, 30)
 adaClassify([0, 0], classifierArray)
-# adaClassify([[5, 5], [0, 0]], classifierArray)
-# """
+adaClassify([[5, 5], [0, 0]], classifierArray)
+"""
