@@ -108,3 +108,34 @@ classifierArray, aggClassEst = adaBoostTrainDS(datMat, classLabels, 30)
 adaClassify([0, 0], classifierArray)
 adaClassify([[5, 5], [0, 0]], classifierArray)
 """
+
+def loadDataSet(fileName):
+    """
+    自适应数据加载函数
+    :param fileName:
+    :return:
+    """
+    numFeat = len(open(fileName).readline().split('\t'))
+    dataMat = []
+    labelMat = []
+    fr = open(fileName)
+    for line in fr.readlines():
+        lineArr = []
+        curLine = line.strip().split('\t')
+        for i in range(numFeat - 1):
+            lineArr.append(float(curLine[i]))
+        dataMat.append(lineArr)
+        labelMat.append(float(curLine[-1]))
+    return dataMat, labelMat
+
+# """
+datArr, labelArr = loadDataSet('horseColicTraining2.txt')
+classifierArray, aggClassEst = adaBoostTrainDS(datArr, labelArr, 10)
+
+testArr, testLabelArr = loadDataSet("horseColicTest2.txt")
+prediction10 = adaClassify(testArr, classifierArray)
+
+errArr = mat(ones((67, 1)))
+error = errArr[prediction10 != mat(testLabelArr).T].sum() / 67
+print error
+# """
