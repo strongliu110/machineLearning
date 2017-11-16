@@ -89,7 +89,7 @@ def lwlrTest(testArr, xArr, yArr, k=1.0):
         yHat[i] = lwlr(testArr[i], xArr, yArr, k)
     return yHat
 
-# """
+"""
 xArr, yArr = loadDataSet('ex0.txt')
 lwlr(xArr[0], xArr, yArr, 1.0)
 lwlr(xArr[0], xArr, yArr, 0.001)
@@ -106,4 +106,74 @@ ax.plot(xSort[:, 1], yHat[srtInd])
 ax.scatter(xMat[:, 1].flatten().A[0], mat(yArr).T.flatten().A[0], s=2, c="red")
 plt.show()
 
+"""
+
+def rssError(yArr, yHatArr):
+    return ((yArr - yHatArr) ** 2).sum()
+
+"""
+abX, abY = loadDataSet('abalone.txt')
+
+# 训练误差
+yHat01 = lwlrTest(abX[0:99], abX[0:99], abY[0:99], 0.1)
+yHat1 = lwlrTest(abX[0:99], abX[0:99], abY[0:99], 1)
+yHat10 = lwlrTest(abX[0:99], abX[0:99], abY[0:99], 10)
+print rssError(abY[0:99], yHat01.T)
+print rssError(abY[0:99], yHat1.T)
+print rssError(abY[0:99], yHat10.T)
+
+# 测试误差
+yHat01 = lwlrTest(abX[100:199], abX[0:99], abY[0:99], 0.1)
+yHat1 = lwlrTest(abX[100:199], abX[0:99], abY[0:99], 1)
+yHat10 = lwlrTest(abX[100:199], abX[0:99], abY[0:99], 10)
+print rssError(abY[100:199], yHat01.T)
+print rssError(abY[100:199], yHat1.T)
+print rssError(abY[100:199], yHat10.T)
+
+ws = standRegres(abX[0:99], abY[0:99])
+yHat = mat(abX[100:199]) * ws
+print rssError(abY[100:199], yHat.T.A)
+
+"""
+
+def ridgeRegres(xMat, yMat, lam=0.2):
+    """
+    岭回归
+    :param xMat:
+    :param yMat:
+    :param lam:
+    :return:
+    """
+    xTx = xMat.T * xMat
+    denom = xTx + eye(shape(xMat)[1]) * lam
+    if linalg.det(denom) == 0.0:
+        print "This matrix is singular, cannot do inverse"
+        return
+    ws = denom.I * (xMat.T * yMat)
+    return ws
+
+def ridgeTest(xArr, yArr):
+    xMat = mat(xArr)
+    yMat = mat(yArr).T
+    yMean = mean(yMat, 0)
+    yMat = yMat - yMean
+    xMeans = mean(xMat, 0)
+    xVar = var(xMat, 0)
+    xMat = (xMat - xMeans) / xVar  # Z值
+    numTestPts = 30
+    wMat = zeros((numTestPts, shape(xMat)[1]))
+    for i in range(numTestPts):
+        ws = ridgeRegres(xMat, yMat, exp(i - 10))
+        wMat[i, :] = ws.T
+    return wMat
+
+# """
+abX, abY = loadDataSet('abalone.txt')
+ridgeWeights = ridgeTest(abX, abY)
+
+import matplotlib.pyplot as plt
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(ridgeWeights)
+plt.show()
 # """
