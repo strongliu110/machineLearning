@@ -190,10 +190,12 @@ print myTree
 """
 
 def regTreeEval(model, inDat):
+    """回归树"""
     return float(model)
 
 
 def modelTreeEval(model, inDat):
+    """模型树"""
     n = shape(inDat)[1]
     X = mat(ones((1, n + 1)))
     X[:, 1:n + 1] = inDat
@@ -221,7 +223,7 @@ def createForeCast(tree, testData, modelEval=regTreeEval):
         yHat[i, 0] = treeForeCast(tree, mat(testData[i]), modelEval)
     return yHat
 
-# """
+"""
 trainMat = mat(loadDataSet('bikeSpeedVsIq_train.txt'))
 testMat = mat(loadDataSet('bikeSpeedVsIq_test.txt'))
 myTree = createTree(trainMat, ops=(1, 20))
@@ -236,4 +238,4 @@ ws, X, Y = linearSolve(trainMat)
 for i in range(shape(testMat)[0]):
     yHat[i] = testMat[i, 0] * ws[1, 0] + ws[0, 0]
 print corrcoef(yHat, testMat[:, 1], rowvar=0)[0, 1]
-# """
+"""
