@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4953dd1f-bf11-46ea-a0dc-c7ebf9e64e88" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kMeans/kMeans.py" afterPath="$PROJECT_DIR$/kMeans/kMeans.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,7 +14,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/machineLearning$bayes.coverage" NAME="bayes Coverage Results" MODIFIED="1504531605034" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bayes" />
     <SUITE FILE_PATH="coverage/machineLearning$svnmMLiA.coverage" NAME="svnmMLiA Coverage Results" MODIFIED="1508856038461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/smo" />
-    <SUITE FILE_PATH="coverage/machineLearning$kMeans.coverage" NAME="kMeans Coverage Results" MODIFIED="1511189356863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/kMeans" />
+    <SUITE FILE_PATH="coverage/machineLearning$kMeans.coverage" NAME="kMeans Coverage Results" MODIFIED="1511192240787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/kMeans" />
     <SUITE FILE_PATH="coverage/machineLearning$logRegres.coverage" NAME="logRegres Coverage Results" MODIFIED="1506251097502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/logRegres" />
     <SUITE FILE_PATH="coverage/machineLearning$treeExplore.coverage" NAME="treeExplore Coverage Results" MODIFIED="1511105585759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/regTrees" />
     <SUITE FILE_PATH="coverage/machineLearning$trees.coverage" NAME="trees Coverage Results" MODIFIED="1504189223551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/trees" />
@@ -43,8 +43,8 @@
       <file leaf-file-name="kMeans.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kMeans/kMeans.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="67" column="3" lean-forward="true" selection-start-line="67" selection-start-column="3" selection-end-line="67" selection-end-column="3" />
+            <state relative-caret-position="245">
+              <caret line="177" column="74" lean-forward="true" selection-start-line="177" selection-start-column="74" selection-end-line="177" selection-end-column="74" />
               <folding />
             </state>
           </provider>
@@ -104,6 +104,9 @@
       <find>regErr</find>
       <find>sine</find>
       <find>drawNewTree</find>
+      <find>randCent</find>
+      <find>kMeans</find>
+      <find>clustAssingclustAssing</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -609,7 +612,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="121" />
+      <option name="time" value="125" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -938,8 +941,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kMeans/kMeans.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="67" column="3" lean-forward="true" selection-start-line="67" selection-start-column="3" selection-end-line="67" selection-end-column="3" />
+        <state relative-caret-position="245">
+          <caret line="177" column="74" lean-forward="true" selection-start-line="177" selection-start-column="74" selection-end-line="177" selection-end-column="74" />
           <folding />
         </state>
       </provider>
