@@ -145,3 +145,14 @@ rules = generateRules(L, supportData, minConf=0.7)
 # rules = generateRules(L, supportData, minConf=0.5)
 """
 
+"""
+mushDatSet = [line.split() for line in open('mushroom.dat').readlines()]
+L, supportData = apriori(mushDatSet, minSupport=0.3)
+for item in L[1]:
+    if item.intersection('2'):
+        print item
+
+# for item in L[3]:
+#     if item.intersection('2'):
+#         print item
+"""
