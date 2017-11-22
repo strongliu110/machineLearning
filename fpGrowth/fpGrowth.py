@@ -133,7 +133,7 @@ def mineTree(inTree, headerTable, minSup, preFix, freqItemList):
             myCondTree.disp(1)
             mineTree(myCondTree, myHead, minSup, newFreqSet, freqItemList)
 
-# """
+"""
 simpDat = loadSimpDat()
 initSet = createInitSet(simpDat)
 myFPtree, myHeaderTab = createTree(initSet, 3)
@@ -146,4 +146,33 @@ myFPtree, myHeaderTab = createTree(initSet, 3)
 freqItems = []
 mineTree(myFPtree, myHeaderTab, 3, set([]), freqItems)
 print freqItems
+"""
+
+from time import sleep
+import re
+
+def textParse(bigString):
+    urlsRemoved = re.sub('(http:[/][/]|www.)([a-z]|[A-Z]|[0-9]|[/.]|[~])*', '', bigString)
+    listOfTokens = re.split(r'\W*', urlsRemoved)
+    return [tok.lower() for tok in listOfTokens if len(tok) > 2]
+
+def mineTweets(tweetArr, minSup=5):
+    parsedList = []
+    for i in range(14):
+        for j in range(100):
+            parsedList.append(textParse(tweetArr[i][j].text))
+    initSet = createInitSet(parsedList)
+    myFPtree, myHeaderTab = createTree(initSet, minSup)
+    myFreqList = []
+    mineTree(myFPtree, myHeaderTab, minSup, set([]), myFreqList)
+    return myFreqList
+
+# """
+parseDat = [line.split() for line in open('kosarak.dat').readlines()]
+initSet = createInitSet(parseDat)
+myFPtree, myHeaderTab = createTree(initSet, 100000)
+myFreqList = []
+mineTree(myFPtree, myHeaderTab, 100000, set([]), myFreqList)
+len(myFreqList)
+print myFreqList
 # """
