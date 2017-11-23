@@ -47,3 +47,20 @@ ax.scatter(reconMat[:, 0].flatten().A[0], reconMat[:, 1].flatten().A[0], marker=
 plt.show()
 """
 
+def replaceNanWithMean():
+    datMat = loadDataSet('secom.data', ' ')
+    numFeat = shape(datMat)[1]
+    for i in range(numFeat):
+        meanVal = mean(datMat[nonzero(~isnan(datMat[:, i].A))[0], i])  # 计算所有非NaN得平均值
+        datMat[nonzero(isnan(datMat[:, i].A))[0], i] = meanVal  # 将所有NaN值设为平均值
+    return datMat
+
+# """
+dataMat = replaceNanWithMean()
+meanVals = mean(dataMat, axis=0)
+meanRemoved = dataMat - meanVals
+covMat = cov(meanRemoved, rowvar=0)
+eigVals, eigVects = linalg.eig(mat(covMat))
+print eigVals
+
+# """
